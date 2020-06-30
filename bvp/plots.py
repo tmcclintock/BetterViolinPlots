@@ -101,6 +101,7 @@ def analytic_violin(
                 axis.plot(
                     _xy_order(x, i - y * scale, vertical_violins), **kwargs,
                 )
+                print(_xy_order(x, i - y * scale, vertical_violins))
                 # right side
                 axis.plot(
                     _xy_order(x, i + y * scale, vertical_violins), **kwargs,
