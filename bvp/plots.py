@@ -116,3 +116,11 @@ def analytic_violin(
             )  # pragma: no cover
 
     return fig, axis
+
+
+def point_violin():
+    pass
+
+
+def histogram_violin():
+    pass
