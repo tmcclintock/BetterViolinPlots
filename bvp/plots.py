@@ -17,6 +17,19 @@ def _xy_order(domain: List, dist: List, vertical_violin: bool) -> Dict:
         return domain, dist  # {"x": domain, "y": dist}
 
 
+def _plot_from_x_dist(axis, x, y, index, kwargs, vertical_violins):
+    scale = 0.4 / y.max()
+    # left side
+    axis.plot(
+        *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
+    )
+    # right side
+    axis.plot(
+        *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
+    )
+    return
+
+
 def analytic_violin(
     distributions: List,
     positions: Optional[List[int]] = None,
@@ -110,15 +123,7 @@ def analytic_violin(
             elif isinstance(d.dist, rv_continuous):
                 x = np.linspace(min(interval), max(interval), 1000)
                 y = d.pdf(x)
-                scale = 0.4 / y.max()
-                # left side
-                axis.plot(
-                    *_xy_order(x, i - y * scale, vertical_violins), **kwargs,
-                )
-                # right side
-                axis.plot(
-                    *_xy_order(x, i + y * scale, vertical_violins), **kwargs,
-                )
+                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
             else:  # need to do random draws
                 raise NotImplementedError(
                     "only scipy.stats distributions supported"
@@ -211,15 +216,7 @@ def kde_violin(
         # Make the domain and range
         x = np.linspace(min(interval), max(interval), 1000)
         y = kde(x)
-        scale = 0.4 / y.max()
-        # left side
-        axis.plot(
-            *_xy_order(x, i - y * scale, vertical_violins), **kwargs,
-        )
-        # right side
-        axis.plot(
-            *_xy_order(x, i + y * scale, vertical_violins), **kwargs,
-        )
+        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
 
     return fig, axis
 
