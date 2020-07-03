@@ -1,4 +1,5 @@
-# BetterViolinPlots
+# BetterViolinPlots [![Build Status](https://travis-ci.com/tmcclintock/BetterViolinPlots.svg?branch=master)](https://travis-ci.com/tmcclintock/BetterViolinPlots.svg?branch=master)
+
 Better violin plots for common scenarios.
 
 This package allows for violin plots of any and all of:
