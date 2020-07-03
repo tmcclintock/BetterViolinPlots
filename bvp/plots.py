@@ -10,11 +10,11 @@ import numpy as np
 from scipy.stats import rv_discrete, rv_continuous, gaussian_kde
 
 
-def _xy_order(domain: List, dist: List, vertical_violin: bool) -> Dict:
+def _xy_order(domain: List, dist: List, vertical_violin: bool) -> Tuple:
     if vertical_violin:
-        return dist, domain  # {"x": dist, "y": domain}
+        return dist, domain
     else:
-        return domain, dist  # {"x": domain, "y": dist}
+        return domain, dist
 
 
 def _plot_from_x_dist(axis, x, y, index, kwargs, vertical_violins):
@@ -206,11 +206,3 @@ def kde_violin(
         _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
 
     return fig, axis
-
-
-def point_violin():
-    pass
-
-
-def histogram_violin():
-    pass
