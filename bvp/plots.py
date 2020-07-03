@@ -98,28 +98,15 @@ def analytic_violin(
         if hasattr(d, "dist"):
 
             if isinstance(d.dist, rv_discrete):
-                x = np.arange(min(interval), max(interval) + 1)
-                y = d.pmf(x)
-                scale = 0.4 / y.max()
-                for xi, yi in zip(x, y):
-                    # right side
-                    axis.plot(
-                        *_xy_order(
-                            [xi, xi + 1],
-                            [i - yi * scale, i - yi * scale],
-                            vertical_violins,
-                        ),
-                        **kwargs,
-                    )
-                    # left side
-                    axis.plot(
-                        *_xy_order(
-                            [xi, xi + 1],
-                            [i + yi * scale, i + yi * scale],
-                            vertical_violins,
-                        ),
-                        **kwargs,
-                    )
+                xs = np.arange(min(interval), max(interval) + 1)
+                ys = d.pmf(xs)
+                scale = 0.4 / ys.max()
+                x = np.array([xs[0], xs[0], xs[0] + 1])
+                y = np.array([0, ys[0] * scale, ys[0] * scale])
+                for j in range(1, len(xs)):
+                    x = np.hstack((x, [xs[i], xs[i] + 1]))
+                    y = np.hstack((y, [ys[j] * scale, ys[j] * scale]))
+                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
             elif isinstance(d.dist, rv_continuous):
                 x = np.linspace(min(interval), max(interval), 1000)
                 y = d.pdf(x)
