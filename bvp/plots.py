@@ -30,6 +30,29 @@ def _plot_from_x_dist(axis, x, y, index, kwargs, vertical_violins):
     return
 
 
+def _preamble(data, axis, plot_kwargs, positions, vertical_violins):
+    if axis is None:
+        fig, axis = plt.subplots()
+    else:
+        fig = axis.get_figure()
+
+    if isinstance(plot_kwargs, list):
+        assert len(data) == len(plot_kwargs)
+
+    if positions is not None:
+        assert len(data) == len(positions)
+    else:
+        # Horizontal positions of the centers of the violins
+        positions = np.arange(0, len(data))
+
+    # Center positions between integers
+    if vertical_violins:
+        axis.set_xlim(positions.min() - 0.5, positions.max() + 0.5)
+    else:
+        axis.set_ylim(positions.min() - 0.5, positions.max() + 0.5)
+    return fig, axis, positions
+
+
 def analytic_violin(
     distributions: List,
     positions: Optional[List[int]] = None,
@@ -65,25 +88,9 @@ def analytic_violin(
             pairs to pass to each plot routine. If List, it is a list of
             Dict objects to pass, one for each plot routine
     """
-    if axis is None:
-        fig, axis = plt.subplots()
-    else:
-        fig = axis.get_figure()
-
-    if isinstance(plot_kwargs, list):
-        assert len(distributions) == len(plot_kwargs)
-
-    if positions is not None:
-        assert len(distributions) == len(positions)
-    else:
-        # Horizontal positions of the centers of the violins
-        positions = np.arange(0, len(distributions))
-
-    # Center positions between integers
-    if vertical_violins:
-        axis.set_xlim(positions.min() - 0.5, positions.max() + 0.5)
-    else:
-        axis.set_ylim(positions.min() - 0.5, positions.max() + 0.5)
+    fig, axis, positions = _preamble(
+        distributions, axis, plot_kwargs, positions, vertical_violins
+    )
 
     # Loop over all distributions and draw the violin
     for i, d in zip(positions, distributions):
@@ -163,28 +170,12 @@ def kde_violin(
         kde_kwargs (Optional[Dict]): keywords to pass to the
             `scipy.stats.gaussian_kde` constructor
     """
-    if axis is None:
-        fig, axis = plt.subplots()
-    else:
-        fig = axis.get_figure()
-
     assert np.ndim(points) < 3
     points = np.atleast_2d(points)
 
-    if isinstance(plot_kwargs, list):
-        assert len(points) == len(plot_kwargs)
-
-    if positions is not None:
-        assert len(points) == len(positions)
-    else:
-        # Horizontal positions of the centers of the violins
-        positions = np.arange(0, len(points))
-
-    # Center positions between integers
-    if vertical_violins:
-        axis.set_xlim(positions.min() - 0.5, positions.max() + 0.5)
-    else:
-        axis.set_ylim(positions.min() - 0.5, positions.max() + 0.5)
+    fig, axis, positions = _preamble(
+        points, axis, plot_kwargs, positions, vertical_violins
+    )
 
     # Loop over all distributions and draw the violin
     for i, pi in zip(positions, points):
