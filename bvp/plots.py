@@ -10,7 +10,7 @@ import numpy as np
 from scipy.stats import rv_discrete, rv_continuous, gaussian_kde
 
 
-def _xy_order(domain: List, dist: List, vertical_violin: bool) -> Tuple:
+def _xy_order(domain: List, dist: List, vertical_violin: bool):
     if vertical_violin:
         return dist, domain
     else:
@@ -104,7 +104,7 @@ def analytic_violin(
                 x = np.array([xs[0], xs[0], xs[0] + 1])
                 y = np.array([0, ys[0] * scale, ys[0] * scale])
                 for j in range(1, len(xs)):
-                    x = np.hstack((x, [xs[i], xs[i] + 1]))
+                    x = np.hstack((x, [xs[j], xs[j] + 1]))
                     y = np.hstack((y, [ys[j] * scale, ys[j] * scale]))
                 _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
             elif isinstance(d.dist, rv_continuous):
@@ -206,3 +206,11 @@ def kde_violin(
         _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
 
     return fig, axis
+
+
+def point_violin():
+    pass
+
+
+def histogram_violin():
+    pass
