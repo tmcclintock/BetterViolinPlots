@@ -8,6 +8,11 @@ Welcome to BetterViolinPlots's documentation!
 
 .. toctree::
    :maxdepth: 2
+
+   bvp
+
+.. toctree::
+   :maxdepth: 2
    :caption: Contents:
 
 

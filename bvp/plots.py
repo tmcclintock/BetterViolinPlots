@@ -73,7 +73,7 @@ def analytic_violin(
 
        the default plot keywords are
 
-       .. code-bloc:: python
+       .. code-block:: python
 
           plot_kwargs = {
              "color": "black",
@@ -151,7 +151,7 @@ def kde_violin(
 
        the default plot keywords are
 
-       .. code-bloc:: python
+       .. code-block:: python
 
           plot_kwargs = {
              "color": "black",
