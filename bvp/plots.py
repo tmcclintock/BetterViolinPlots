@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import rv_discrete, rv_continuous, gaussian_kde
+from scipy.stats import rv_discrete, rv_continuous, gaussian_kde, norm
 
 
 def _xy_order(domain: List, dist: List, vertical_violin: bool):
@@ -61,6 +61,8 @@ def analytic_violin(
     plot_kwargs: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = {
         "color": "black",
     },
+    sigma: Optional[float] = 5,
+    interval: Optional[List] = None,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
     Create violin plots of analytic distributions.
@@ -87,14 +89,30 @@ def analytic_violin(
         plot_kwargs (Dict or List): if Dict, a dictionary of keyword-value
             pairs to pass to each plot routine. If List, it is a list of
             Dict objects to pass, one for each plot routine
+        sigma (Optional[float]): symmetric sigma level to plot; mutually
+            exclusiive with the `interval` argument
+        interval (Optional[List[float]]): plotting interval; default `None`
     """
     fig, axis, positions = _preamble(
         distributions, axis, plot_kwargs, positions, vertical_violins
     )
 
+    if sigma is not None and interval is not None:
+        raise ValueError("`sigma` and `interval` are mutually exclusive")
+    if sigma is not None:
+        assert np.isscalar(sigma)
+        normal_prob_interval = norm.cdf(sigma) - norm.cdf(-sigma)
+    elif interval is not None:
+        assert np.shape(interval) == (2,)
+        assert interval[0] < interval[1]
+        normal_prob_interval = None
+    else:  # sigma and interval are None
+        raise ValueError("one of `sigma` and `interval` must be specified")
+
     # Loop over all distributions and draw the violin
     for i, d in zip(positions, distributions):
-        interval = d.interval(0.99999)  # 5-sigma
+        if normal_prob_interval is not None:
+            interval = d.interval(normal_prob_interval)
 
         if isinstance(plot_kwargs, list):
             kwargs = plot_kwargs[i]
