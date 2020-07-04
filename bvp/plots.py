@@ -160,6 +160,8 @@ def kde_violin(
         "bw_method": "scott",
         "weights": None,
     },
+    sigma: Optional[float] = 5,
+    interval: Optional[List] = None,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
     Create violin plots of Gaussian kernel density estimations (KDE)
@@ -187,6 +189,9 @@ def kde_violin(
             each plot routine
         kde_kwargs (Optional[Dict]): keywords to pass to the
             `scipy.stats.gaussian_kde` constructor
+        sigma (Optional[float]): symmetric sigma level to plot; mutually
+            exclusiive with the `interval` argument
+        interval (Optional[List[float]]): plotting interval; default `None`
     """
     assert np.ndim(points) < 3
     points = np.atleast_2d(points)
@@ -195,11 +200,24 @@ def kde_violin(
         points, axis, plot_kwargs, positions, vertical_violins
     )
 
+    if sigma is not None and interval is not None:
+        raise ValueError("`sigma` and `interval` are mutually exclusive")
+    if sigma is not None:
+        assert np.isscalar(sigma)
+        compute_interval = True
+    elif interval is not None:
+        assert np.shape(interval) == (2,)
+        assert interval[0] < interval[1]
+        compute_interval = False
+    else:  # sigma and interval are None
+        raise ValueError("one of `sigma` and `interval` must be specified")
+
     # Loop over all distributions and draw the violin
     for i, pi in zip(positions, points):
         mean = np.mean(pi)
         std = np.std(pi)
-        interval = np.array([mean - 5 * std, mean + 5 * std])  # 5-sigma
+        if compute_interval:
+            interval = np.array([mean - sigma * std, mean + sigma * std])
 
         if isinstance(plot_kwargs, list):
             kwargs = plot_kwargs[i]
