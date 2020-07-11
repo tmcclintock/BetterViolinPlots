@@ -240,24 +240,39 @@ def boxplot(
     positions: Optional[List[int]] = None,
     axis: Optional["mpl.axes.Axes"] = None,
     vertical_violins: bool = True,
-    boxplot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {},
-    plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
-        "color": "black",
+    boxplot_kwargs: Dict[str, Dict[str, Any]] = {
+        "boxprops": {"color": "black"},
     },
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
+    """
+    Create boxplots of the points using the implementation
+    from `matplotlib`.
+
+    Args:
+        points (List): samples of an unknown distribution or list of samples
+        positions (Optional[List[int]]): locations to plot the violins
+        axis (Optional[mpl.axes.Axes]): axis to use for plotting,
+            default `None`
+        vertical_violins (Optional[bool]): flag to indicate orientation
+        boxplot_kwargs (Dict[str, Dict[str, Any]]): keyword-value pairs
+            to pass to each of the artists in the boxplot.
+            See `this SO <https://stackoverflow.com/questions/41997493/python-matplotlib-boxplot-color>`_  # noqa: E501
+            link for more information.
+    """
+
     assert np.ndim(points) < 3
     points = np.atleast_2d(points)
 
     fig, axis, positions = _preamble(
-        points, axis, plot_kwargs, positions, vertical_violins
+        points, axis, None, positions, vertical_violins
     )
 
     axis.boxplot(
-        points,
+        points.T,
         positions=positions,
-        **boxplot_kwargs,
-        **plot_kwargs,
         vert=vertical_violins,
+        patch_artist=True,
+        **boxplot_kwargs,
     )
     return fig, axis
 

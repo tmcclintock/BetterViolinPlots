@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import scipy.stats as ss
 
-from bvp import analytic_violin, kde_violin
+from bvp import analytic_violin, boxplot, kde_violin
 from bvp.plots import _xy_order
 
 
@@ -55,6 +55,30 @@ class kde_violin_test(TestCase):
             kde_violin(self.samples, positions=[0, 1, 2])
         with pytest.raises(AssertionError):
             kde_violin(self.samples, plot_kwargs=[{}, {}, {}])
+
+
+class boxplot_test(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.dists = [ss.norm(loc=0, scale=1), ss.norm(loc=0, scale=1)]
+        self.samples = [d.rvs(size=1000) for d in self.dists]
+
+    def test_smoke_basic(self):
+        fig, ax = boxplot(self.samples)
+        assert ax is not None
+        assert fig is not None
+
+    def test_smoke_kwargs(self):
+        bpkw = {"boxprops": {"facecolor": "red"}}
+        fig, ax = boxplot(self.samples, boxplot_kwargs=bpkw)
+        assert ax is not None
+        assert fig is not None
+
+    def test_asserts(self):
+        with pytest.raises(AssertionError):
+            boxplot(self.samples, positions=[0])
+        with pytest.raises(AssertionError):
+            boxplot(self.samples, positions=[0, 1, 2])
 
 
 class _xy_order_test(TestCase):
