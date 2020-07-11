@@ -58,10 +58,10 @@ def analytic_violin(
     positions: Optional[List[int]] = None,
     axis: Optional["mpl.axes.Axes"] = None,
     vertical_violins: bool = True,
-    plot_kwargs: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = {
+    plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
         "color": "black",
     },
-    sigma: Optional[float] = 5,
+    sigma: float = 5.0,
     interval: Optional[List] = None,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
@@ -89,7 +89,7 @@ def analytic_violin(
         plot_kwargs (Dict or List): if Dict, a dictionary of keyword-value
             pairs to pass to each plot routine. If List, it is a list of
             Dict objects to pass, one for each plot routine
-        sigma (Optional[float]): symmetric sigma level to plot; mutually
+        sigma (float): symmetric sigma level to plot; mutually
             exclusiive with the `interval` argument
         interval (Optional[List[float]]): plotting interval; default `None`
     """
@@ -153,14 +153,14 @@ def kde_violin(
     positions: Optional[List[int]] = None,
     axis: Optional["mpl.axes.Axes"] = None,
     vertical_violins: bool = True,
-    plot_kwargs: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = {
+    plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
         "color": "black",
     },
-    kde_kwargs: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = {
+    kde_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
         "bw_method": "scott",
         "weights": None,
     },
-    sigma: Optional[float] = 5,
+    sigma: float = 5.0,
     interval: Optional[List] = None,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
@@ -235,9 +235,33 @@ def kde_violin(
     return fig, axis
 
 
-def point_violin():
-    pass
+def boxplot(
+    points: Union[List, np.ndarray],
+    positions: Optional[List[int]] = None,
+    axis: Optional["mpl.axes.Axes"] = None,
+    vertical_violins: bool = True,
+    boxplot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {},
+    plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
+        "color": "black",
+    },
+) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
+    assert np.ndim(points) < 3
+    points = np.atleast_2d(points)
+
+    fig, axis, positions = _preamble(
+        points, axis, plot_kwargs, positions, vertical_violins
+    )
+
+    axis.boxplot(
+        points,
+        positions=positions,
+        **boxplot_kwargs,
+        **plot_kwargs,
+        vert=vertical_violins,
+    )
+    return fig, axis
 
 
+# May not implement this one
 def histogram_violin():
     pass

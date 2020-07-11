@@ -1,1 +1,1 @@
-from bvp.plots import analytic_violin, kde_violin
+from bvp.plots import analytic_violin, boxplot, kde_violin
