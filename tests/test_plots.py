@@ -36,6 +36,14 @@ class analytic_violin_test(TestCase):
         with pytest.raises(AssertionError):
             analytic_violin(self.dists, plot_kwargs=[{}, {}, {}])
 
+    def test_sides_asserts(self):
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sides="top", vertical_violins=True)
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sides="left", vertical_violins=False)
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sides="blag")
+
 
 class kde_violin_test(TestCase):
     def setUp(self):
@@ -55,6 +63,14 @@ class kde_violin_test(TestCase):
             kde_violin(self.samples, positions=[0, 1, 2])
         with pytest.raises(AssertionError):
             kde_violin(self.samples, plot_kwargs=[{}, {}, {}])
+
+    def test_sides_asserts(self):
+        with pytest.raises(AssertionError):
+            kde_violin(self.dists, sides="top", vertical_violins=True)
+        with pytest.raises(AssertionError):
+            kde_violin(self.dists, sides="left", vertical_violins=False)
+        with pytest.raises(AssertionError):
+            kde_violin(self.dists, sides="blag")
 
 
 class boxplot_test(TestCase):
