@@ -17,16 +17,20 @@ def _xy_order(domain: List, dist: List, vertical_violin: bool):
         return domain, dist
 
 
-def _plot_from_x_dist(axis, x, y, index, kwargs, vertical_violins):
+def _plot_from_x_dist(
+    axis, x, y, index, kwargs, vertical_violins, sides="both"
+):
     scale = 0.4 / y.max()
     # left side
-    axis.plot(
-        *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
-    )
-    # right side
-    axis.plot(
-        *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
-    )
+    if sides in ["both", "left", "top"]:
+        axis.plot(
+            *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
+        )
+    if sides in ["both", "right", "bottom"]:
+        # right side
+        axis.plot(
+            *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
+        )
     return
 
 
@@ -140,11 +144,15 @@ def analytic_violin(
                 for j in range(1, len(xs)):
                     x = np.hstack((x, [xs[j], xs[j] + 1]))
                     y = np.hstack((y, [ys[j] * scale, ys[j] * scale]))
-                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+                _plot_from_x_dist(
+                    axis, x, y, i, kwargs, vertical_violins, sides
+                )
             elif isinstance(d.dist, rv_continuous):
                 x = np.linspace(min(interval), max(interval), 1000)
                 y = d.pdf(x)
-                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+                _plot_from_x_dist(
+                    axis, x, y, i, kwargs, vertical_violins, sides
+                )
             else:  # need to do random draws
                 raise NotImplementedError(
                     "only scipy.stats distributions supported"
@@ -240,7 +248,7 @@ def kde_violin(
         # Make the domain and range
         x = np.linspace(min(interval), max(interval), 1000)
         y = kde(x)
-        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
 
     return fig, axis
 
