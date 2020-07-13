@@ -17,20 +17,31 @@ def _xy_order(domain: List, dist: List, vertical_violin: bool):
         return domain, dist
 
 
-def _plot_from_x_dist(axis, x, y, index, kwargs, vertical_violins):
+def _plot_from_x_dist(
+    axis, x, y, index, kwargs, vertical_violins, sides="both"
+):
     scale = 0.4 / y.max()
     # left side
-    axis.plot(
-        *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
-    )
-    # right side
-    axis.plot(
-        *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
-    )
+    if sides in ["both", "left", "top"]:
+        axis.plot(
+            *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
+        )
+    if sides in ["both", "right", "bottom"]:
+        # right side
+        axis.plot(
+            *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
+        )
     return
 
 
-def _preamble(data, axis, plot_kwargs, positions, vertical_violins):
+def _preamble(
+    data, axis, plot_kwargs, positions, vertical_violins, sides="both"
+):
+    if vertical_violins is True:
+        assert sides in ["both", "left", "right"]
+    else:  # horizontal violins
+        assert sides in ["both", "top", "bottom"]
+
     if axis is None:
         fig, axis = plt.subplots()
     else:
@@ -58,6 +69,7 @@ def analytic_violin(
     positions: Optional[List[int]] = None,
     axis: Optional["mpl.axes.Axes"] = None,
     vertical_violins: bool = True,
+    sides: str = "both",
     plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
         "color": "black",
     },
@@ -86,6 +98,7 @@ def analytic_violin(
         positions (Optional[List[int]]): locations to plot the violins
         axis (mpl.axes.Axes): axis to use for plotting, default `None`
         vertical_violins (bool): flag to indicate orientation
+        sides (str): string to indicate where to put the plot
         plot_kwargs (Dict or List): if Dict, a dictionary of keyword-value
             pairs to pass to each plot routine. If List, it is a list of
             Dict objects to pass, one for each plot routine
@@ -94,7 +107,7 @@ def analytic_violin(
         interval (Optional[List[float]]): plotting interval; default `None`
     """
     fig, axis, positions = _preamble(
-        distributions, axis, plot_kwargs, positions, vertical_violins
+        distributions, axis, plot_kwargs, positions, vertical_violins, sides,
     )
 
     if sigma is not None and interval is not None:
@@ -131,11 +144,15 @@ def analytic_violin(
                 for j in range(1, len(xs)):
                     x = np.hstack((x, [xs[j], xs[j] + 1]))
                     y = np.hstack((y, [ys[j] * scale, ys[j] * scale]))
-                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+                _plot_from_x_dist(
+                    axis, x, y, i, kwargs, vertical_violins, sides
+                )
             elif isinstance(d.dist, rv_continuous):
                 x = np.linspace(min(interval), max(interval), 1000)
                 y = d.pdf(x)
-                _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+                _plot_from_x_dist(
+                    axis, x, y, i, kwargs, vertical_violins, sides
+                )
             else:  # need to do random draws
                 raise NotImplementedError(
                     "only scipy.stats distributions supported"
@@ -153,6 +170,7 @@ def kde_violin(
     positions: Optional[List[int]] = None,
     axis: Optional["mpl.axes.Axes"] = None,
     vertical_violins: bool = True,
+    sides: str = "both",
     plot_kwargs: Union[Dict[str, Any], List[Dict[str, Any]]] = {
         "color": "black",
     },
@@ -197,7 +215,7 @@ def kde_violin(
     points = np.atleast_2d(points)
 
     fig, axis, positions = _preamble(
-        points, axis, plot_kwargs, positions, vertical_violins
+        points, axis, plot_kwargs, positions, vertical_violins, sides
     )
 
     if sigma is not None and interval is not None:
@@ -230,7 +248,7 @@ def kde_violin(
         # Make the domain and range
         x = np.linspace(min(interval), max(interval), 1000)
         y = kde(x)
-        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins)
+        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
 
     return fig, axis
 
