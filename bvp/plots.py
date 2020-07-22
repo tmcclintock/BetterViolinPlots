@@ -180,6 +180,7 @@ def kde_violin(
     },
     sigma: float = 5.0,
     interval: Optional[List] = None,
+    inner: str = None,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
     Create violin plots of Gaussian kernel density estimations (KDE)
@@ -210,6 +211,10 @@ def kde_violin(
         sigma (Optional[float]): symmetric sigma level to plot; mutually
             exclusiive with the `interval` argument
         interval (Optional[List[float]]): plotting interval; default `None`
+        inner (Optional[str]): Representation of the datapoints in the violin
+            interior. If `quartiles`, draw the quartiles of the distribution.
+            If `point` or `stick`, show each underlying datapoint. Using
+            `None` will draw unadorned violins.
     """
     assert np.ndim(points) < 3
     points = np.atleast_2d(points)
