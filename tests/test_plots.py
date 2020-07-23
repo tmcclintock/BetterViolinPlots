@@ -72,6 +72,10 @@ class kde_violin_test(TestCase):
         with pytest.raises(AssertionError):
             kde_violin(self.dists, sides="blag")
 
+    def test_inner(self):
+        with pytest.raises(AssertionError):
+            kde_violin(self.dists, inner="blah")
+
 
 class boxplot_test(TestCase):
     def setUp(self):

@@ -219,6 +219,9 @@ def kde_violin(
     assert np.ndim(points) < 3
     points = np.atleast_2d(points)
 
+    if inner is not None:
+        assert inner in ["quartilse", "point", "stick"]
+
     fig, axis, positions = _preamble(
         points, axis, plot_kwargs, positions, vertical_violins, sides
     )
