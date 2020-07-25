@@ -34,7 +34,20 @@ def _plot_from_x_dist(
     return scale
 
 
-def _inner_from_x_and_kde(axis, x, y, index, inner):
+def _inner_from_x_and_kde(
+    axis, x, y, index, inner, scale, vertical_violins, sides="both"
+):
+    # for xi, yi in zip(x, y):
+    # left side
+    # if sides in ["both", "left", "top"]:
+    # axis.plot(
+    #     *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
+    # )
+    # right side
+    # if sides in ["both", "right", "bottom"]:
+    # axis.plot(
+    #     *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
+    # )
     pass
 
 
@@ -260,13 +273,14 @@ def kde_violin(
         # Make the domain and range
         x = np.linspace(min(interval), max(interval), 1000)
         y = kde(x)
-        scale = _plot_from_x_dist(
-            axis, x, y, i, kwargs, vertical_violins, sides
-        )
+        _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
 
         # Make the inner sticks
         if inner is not None:
-            _inner_from_x_and_kde(axis, pi, kde(pi), i, inner, scale)
+            scale = 0.4 / y.max()
+            _inner_from_x_and_kde(
+                axis, pi, kde(pi), i, inner, scale, vertical_violins, sides
+            )
 
     return fig, axis
 
