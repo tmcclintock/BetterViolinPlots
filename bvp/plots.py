@@ -31,24 +31,28 @@ def _plot_from_x_dist(
         axis.plot(
             *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
         )
-    return scale
+    return
 
 
 def _inner_from_x_and_kde(
     axis, x, y, index, inner, scale, vertical_violins, sides="both"
 ):
-    # for xi, yi in zip(x, y):
-    # left side
-    # if sides in ["both", "left", "top"]:
-    # axis.plot(
-    #     *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
-    # )
-    # right side
-    # if sides in ["both", "right", "bottom"]:
-    # axis.plot(
-    #     *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
-    # )
-    pass
+    for xi, yi in zip(x, y):
+        # left side
+        if sides in ["both", "left", "top"]:
+            xii, yii = _xy_order(
+                [x, x], [index, index - y * scale], vertical_violins
+            )
+            if inner == "stick":
+                axis.plot(xii, yii, c="k", alpha=0.5)
+        # right side
+        if sides in ["both", "right", "bottom"]:
+            xii, yii = _xy_order(
+                [x, x], [index, index + y * scale], vertical_violins
+            )
+            if inner == "stick":
+                axis.plot(xii, yii, c="k", alpha=0.5)
+    return
 
 
 def _preamble(
