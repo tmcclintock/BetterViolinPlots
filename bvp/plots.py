@@ -280,6 +280,8 @@ def kde_violin(
         _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
 
         # Make the inner sticks
+        # Note - to make inner=="quartile" work I need to reorganize
+        # the logic
         if inner is not None:
             scale = 0.4 / y.max()
             _inner_from_x_and_kde(
