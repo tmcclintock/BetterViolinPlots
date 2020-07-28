@@ -37,7 +37,7 @@ def _plot_from_x_dist(
 def _inner_from_x_and_kde(
     axis, x, y, index, inner, scale, vertical_violins, sides="both"
 ):
-    for xi, yi in zip(x, y):
+    for i, (xi, yi) in enumerate(zip(x, y)):
         # left side
         if sides in ["both", "left", "top"]:
             xii, yii = _xy_order(
@@ -45,6 +45,11 @@ def _inner_from_x_and_kde(
             )
             if inner == "stick":
                 axis.plot(xii, yii, c="k", alpha=0.5)
+            if inner == "quartiles":
+                if i == 1:
+                    axis.plot(xii, yii, c="k", alpha=0.5)
+                else:
+                    axis.plot(xii, yii, c="k", alpha=0.5, ls="--")
         # right side
         if sides in ["both", "right", "bottom"]:
             xii, yii = _xy_order(
@@ -52,6 +57,11 @@ def _inner_from_x_and_kde(
             )
             if inner == "stick":
                 axis.plot(xii, yii, c="k", alpha=0.5)
+            if inner == "quartiles":
+                if i == 1:
+                    axis.plot(xii, yii, c="k", alpha=0.5)
+                else:
+                    axis.plot(xii, yii, c="k", alpha=0.5, ls="--")
     return
 
 
@@ -241,7 +251,7 @@ def kde_violin(
     points = np.atleast_2d(points)
 
     if inner is not None:
-        assert inner in ["quartilse", "point", "stick"]
+        assert inner in ["quartiles", "point", "stick"]
 
     fig, axis, positions = _preamble(
         points, axis, plot_kwargs, positions, vertical_violins, sides
@@ -280,12 +290,18 @@ def kde_violin(
         _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
 
         # Make the inner sticks
-        # Note - to make inner=="quartile" work I need to reorganize
-        # the logic
         if inner is not None:
-            scale = 0.4 / y.max()
+            if inner == "stick":
+                x = pi
+                y = kde(pi)
+                scale = 0.4 / y.max()
+            elif inner == "quartiles":
+                q = np.quantile(pi, [0.16, 0.84])
+                x = np.array([q[0], np.mean(pi), q[1]])
+                y = kde(pi)
+                scale = 0.4 / y.max()
             _inner_from_x_and_kde(
-                axis, pi, kde(pi), i, inner, scale, vertical_violins, sides
+                axis, x, y, i, inner, scale, vertical_violins, sides
             )
 
     return fig, axis
