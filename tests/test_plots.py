@@ -9,7 +9,7 @@ import pytest
 import scipy.stats as ss
 
 from bvp import analytic_violin, boxplot, kde_violin
-from bvp.plots import _xy_order
+from bvp.helper_functions import _xy_order
 
 
 class analytic_violin_test(TestCase):
