@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import rv_discrete, rv_continuous, gaussian_kde, norm
 
-from .helper_functions import (
+from bvp.helper_functions import (
     _plot_from_x_dist,
     _inner_from_x_and_kde,
 )
@@ -248,7 +248,7 @@ def kde_violin(
             elif inner == "quartiles":
                 q = np.quantile(pi, [0.16, 0.84])
                 x = np.array([q[0], np.mean(pi), q[1]])
-                y = kde(pi)
+                y = kde(x)
                 scale = 0.4 / y.max()
             _inner_from_x_and_kde(
                 axis, x, y, i, inner, scale, vertical_violins, sides

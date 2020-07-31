@@ -38,7 +38,7 @@ def _inner_from_x_and_kde(
                 if inner == "quartiles" and i == 1:
                     axis.plot(xii, yii, c="k", alpha=0.5)
                 else:
-                    axis.plot(xii, yii, c="k", alpha=0.5, ls="--")
+                    axis.plot(xii, yii, c="k", alpha=0.5, ls=":")
         if sides in ["both", "right", "bottom"]:
             xii, yii = _xy_order(
                 [xi, xi], [index, index + yi * scale], vertical_violins
@@ -47,5 +47,5 @@ def _inner_from_x_and_kde(
                 if inner == "quartiles" and i == 1:
                     axis.plot(xii, yii, c="k", alpha=0.5)
                 else:
-                    axis.plot(xii, yii, c="k", alpha=0.5, ls="--")
+                    axis.plot(xii, yii, c="k", alpha=0.5, ls=":")
     return
