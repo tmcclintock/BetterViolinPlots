@@ -12,7 +12,7 @@ def _xy_order(domain: List, dist: List, vertical_violin: bool):
 
 
 def _plot_from_x_dist(
-    axis, x, y, index, kwargs, vertical_violins, sides="both"
+    axis, x, y, index, kwargs, vertical_violins, sides="both", fill=False
 ):
     scale = 0.4 / y.max()
     if sides in ["both", "left", "top"]:
