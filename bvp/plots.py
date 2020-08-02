@@ -5,44 +5,14 @@ Better violin plots than usual.
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import rv_discrete, rv_continuous, gaussian_kde, norm
 
 from bvp.helper_functions import (
-    _plot_from_x_dist,
     _inner_from_x_and_kde,
+    _plot_from_x_dist,
+    _preamble,
 )
-
-
-def _preamble(
-    data, axis, plot_kwargs, positions, vertical_violins, sides="both"
-):
-    if vertical_violins is True:
-        assert sides in ["both", "left", "right"]
-    else:  # horizontal violins
-        assert sides in ["both", "top", "bottom"]
-
-    if axis is None:
-        fig, axis = plt.subplots()
-    else:
-        fig = axis.get_figure()
-
-    if isinstance(plot_kwargs, list):
-        assert len(data) == len(plot_kwargs)
-
-    if positions is not None:
-        assert len(data) == len(positions)
-    else:
-        # Horizontal positions of the centers of the violins
-        positions = np.arange(0, len(data))
-
-    # Center positions between integers
-    if vertical_violins:
-        axis.set_xlim(positions.min() - 0.5, positions.max() + 0.5)
-    else:
-        axis.set_ylim(positions.min() - 0.5, positions.max() + 0.5)
-    return fig, axis, positions
 
 
 def analytic_violin(
