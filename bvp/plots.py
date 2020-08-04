@@ -267,8 +267,3 @@ def boxplot(
         **boxplot_kwargs,
     )
     return fig, axis
-
-
-# May not implement this one
-def histogram_violin():
-    pass
