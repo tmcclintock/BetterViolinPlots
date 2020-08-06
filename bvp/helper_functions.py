@@ -48,12 +48,18 @@ def _plot_from_x_dist(
     axis, x, y, index, kwargs, vertical_violins, sides="both", fill=False
 ):
     scale = 0.4 / y.max()
+    if not fill:
+        plot_func = axis.plot
+    else:
+        plot_func = (
+            axis.fill_betweenx if vertical_violins else axis.fill_between
+        )
     if sides in ["both", "left", "top"]:
-        axis.plot(
+        plot_func(
             *_xy_order(x, index - y * scale, vertical_violins), **kwargs,
         )
     if sides in ["both", "right", "bottom"]:
-        axis.plot(
+        plot_func(
             *_xy_order(x, index + y * scale, vertical_violins), **kwargs,
         )
     return

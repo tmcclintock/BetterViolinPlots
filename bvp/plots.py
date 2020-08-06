@@ -26,7 +26,7 @@ def analytic_violin(
     },
     sigma: float = 5.0,
     interval: Optional[List] = None,
-    fill_between_kwargs=None,
+    fill=False,
 ) -> Tuple[mpl.figure.Figure, mpl.axes.Axes]:
     """
     Create violin plots of analytic distributions.
@@ -57,8 +57,7 @@ def analytic_violin(
         sigma (float): symmetric sigma level to plot; mutually
             exclusiive with the `interval` argument
         interval (Optional[List[float]]): plotting interval; default `None`
-        fill_between_kwargs (Optional[Dict]): dictionary specifying how to
-            fill the curves. Is unpacked to `pyplot.fill_between`.
+        fill (bool): flag to indicate whether to use a `fill_between` function
     """
     fig, axis, positions = _preamble(
         distributions, axis, plot_kwargs, positions, vertical_violins, sides,
@@ -105,7 +104,9 @@ def analytic_violin(
                 raise ValueError(
                     "distribution not `rv_discrete` or `rv_continuous`"
                 )  # pragma: no cover
-            _plot_from_x_dist(axis, x, y, i, kwargs, vertical_violins, sides)
+            _plot_from_x_dist(
+                axis, x, y, i, kwargs, vertical_violins, sides, fill
+            )
         else:
             raise NotImplementedError(
                 "only scipy.stats distributions supported"
