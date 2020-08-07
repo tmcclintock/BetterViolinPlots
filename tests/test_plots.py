@@ -35,6 +35,14 @@ class analytic_violin_test(TestCase):
             analytic_violin(self.dists, positions=[0, 1, 2])
         with pytest.raises(AssertionError):
             analytic_violin(self.dists, plot_kwargs=[{}, {}, {}])
+        with pytest.raises(ValueError):
+            analytic_violin(self.dists, sigma=1.0, interval=[-1, 1])
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sigma=[1.0])
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sigma=None, interval=[-1, 1, 2])
+        with pytest.raises(AssertionError):
+            analytic_violin(self.dists, sigma=None, interval=[1, -1])
 
     def test_sides_asserts(self):
         with pytest.raises(AssertionError):
