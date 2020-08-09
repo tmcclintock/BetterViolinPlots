@@ -58,6 +58,15 @@ class analytic_violin_test(TestCase):
         with pytest.raises(ValueError):
             analytic_violin(dists)
 
+    def test_dist_attr(self):
+        class BadDist:
+            def interval(self, interval):
+                return interval
+
+        dists = [BadDist()] * 3
+        with pytest.raises(NotImplementedError):
+            analytic_violin(dists)
+
     def test_sides_asserts(self):
         with pytest.raises(AssertionError):
             analytic_violin(self.dists, sides="top", vertical_violins=True)
