@@ -43,6 +43,8 @@ class analytic_violin_test(TestCase):
             analytic_violin(self.dists, sigma=None, interval=[-1, 1, 2])
         with pytest.raises(AssertionError):
             analytic_violin(self.dists, sigma=None, interval=[1, -1])
+        with pytest.raises(ValueError):
+            analytic_violin(self.dists, plot_kwargs=object())
 
     def test_sides_asserts(self):
         with pytest.raises(AssertionError):

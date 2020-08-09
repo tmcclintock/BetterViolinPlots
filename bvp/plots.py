@@ -75,15 +75,22 @@ def analytic_violin(
     else:  # sigma and interval are None
         raise ValueError("one of `sigma` and `interval` must be specified")
 
-    # Loop over all distributions and draw the violin
+    # Loop over all distributions
     for i, d in zip(positions, distributions):
+
+        # If `sigam` was passed, the interval depends on the distribution
         if normal_prob_interval is not None:
             interval = d.interval(normal_prob_interval)
 
         if isinstance(plot_kwargs, list):
             kwargs = plot_kwargs[i]
-        else:
+        elif isinstance(plot_kwargs, dict):
             kwargs = plot_kwargs
+        else:
+            raise ValueError(
+                f"`plot_kwargs` wrong type {type(plot_kwargs)}"
+                + ": must be `dict` or list of `dict` objects"
+            )
 
         # Handle continuous vs discrete cases differently
         if hasattr(d, "dist"):
