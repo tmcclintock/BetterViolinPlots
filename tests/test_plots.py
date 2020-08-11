@@ -28,6 +28,14 @@ class analytic_violin_test(TestCase):
         assert ax is not None
         assert fig is not None
 
+    def test_continuous_with_interval(self):
+        fig, ax = analytic_violin(self.dists, sigma=None, interval=[0.5, 2.5])
+
+    def test_continuous_with_kwarg_list(self):
+        plot_kwargs = {"c": "k", "ls": ":"}
+        plot_kwargs = [plot_kwargs] * len(self.dists)
+        fig, ax = analytic_violin(self.dists, plot_kwargs=plot_kwargs)
+
     def test_asserts(self):
         with pytest.raises(AssertionError):
             analytic_violin(self.dists, positions=[0])
@@ -45,6 +53,8 @@ class analytic_violin_test(TestCase):
             analytic_violin(self.dists, sigma=None, interval=[1, -1])
         with pytest.raises(ValueError):
             analytic_violin(self.dists, plot_kwargs=object())
+        with pytest.raises(ValueError):
+            analytic_violin(self.dists, sigma=None, interval=None)
 
     def test_dist_type(self):
         class BadDist:

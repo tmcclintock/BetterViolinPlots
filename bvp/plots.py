@@ -110,14 +110,14 @@ def analytic_violin(
             else:
                 raise ValueError(
                     "distribution not `rv_discrete` or `rv_continuous`"
-                )  # pragma: no cover
+                )
             _plot_from_x_dist(
                 axis, x, y, i, kwargs, vertical_violins, sides, fill
             )
         else:
             raise NotImplementedError(
                 "only scipy.stats distributions supported"
-            )  # pragma: no cover
+            )
 
     return fig, axis
 
