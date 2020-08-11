@@ -92,8 +92,13 @@ class kde_violin_test(TestCase):
         self.dists = [ss.norm(loc=0, scale=1), ss.norm(loc=0, scale=1)]
         self.samples = [d.rvs(size=1000) for d in self.dists]
 
-    def test_smoke_continuous(self):
+    def test_smoke_kde(self):
         fig, ax = kde_violin(self.samples)
+        assert ax is not None
+        assert fig is not None
+
+    def test_interval_kde(self):
+        fig, ax = kde_violin(self.samples, sigma=None, interval=[0.5, 2.5])
         assert ax is not None
         assert fig is not None
 
@@ -104,18 +109,27 @@ class kde_violin_test(TestCase):
             kde_violin(self.samples, positions=[0, 1, 2])
         with pytest.raises(AssertionError):
             kde_violin(self.samples, plot_kwargs=[{}, {}, {}])
+        with pytest.raises(ValueError):
+            kde_violin(self.samples, sigma=2, interval=[0.5, 2.5])
+        with pytest.raises(ValueError):
+            kde_violin(self.samples, sigma=None, interval=None)
 
     def test_sides_asserts(self):
         with pytest.raises(AssertionError):
-            kde_violin(self.dists, sides="top", vertical_violins=True)
+            kde_violin(self.samples, sides="top", vertical_violins=True)
         with pytest.raises(AssertionError):
-            kde_violin(self.dists, sides="left", vertical_violins=False)
+            kde_violin(self.samples, sides="left", vertical_violins=False)
         with pytest.raises(AssertionError):
-            kde_violin(self.dists, sides="blag")
+            kde_violin(self.samples, sides="blag")
 
     def test_inner(self):
         with pytest.raises(AssertionError):
             kde_violin(self.dists, inner="blah")
+
+    def test_kde_with_kwarg_list(self):
+        plot_kwargs = {"c": "k", "ls": ":"}
+        plot_kwargs = [plot_kwargs] * len(self.dists)
+        fig, ax = kde_violin(self.samples, plot_kwargs=plot_kwargs)
 
 
 class boxplot_test(TestCase):
