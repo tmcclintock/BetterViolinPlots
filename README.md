@@ -5,12 +5,12 @@ Better violin plots for common scenarios.
 This package allows for violin plots of any and all of:
 
 - analytic distributions
-- sample/point estimates
 - KDE estimates from samples
-- histogram representations
+- box plots
 - single or double sided violin plots
 
-In contrast, in traditional packages like `matplotlib` or `seaborn` you will find a single version.
+Packages like `matplotlib` or `seaborn` are limited in that they
+do not have all of these options.
 
 ## Installation
 
