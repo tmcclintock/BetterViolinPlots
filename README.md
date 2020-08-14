@@ -26,7 +26,16 @@ and run the tests
 ```bash
 pytest
 ```
-Please report any issues [here](https://github.com/tmcclintock/BetterViolinPlots/issues).
+Please report any issues
+[here](https://github.com/tmcclintock/BetterViolinPlots/issues).
+
+To contribute to the development, there are a few more requirements
+found in `environment.yml`. To install, the environment, follow the directions
+on [creating and environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file), with
+```bash
+conda env create -f environment.yml
+```
+Followed by the installation instructions above.
 
 ## Usage
 
